@@ -12,8 +12,20 @@ class MySQLConnection:
         self.name = name
         self.port = port
 
-        if MySQLConnection.__instance is None:
-            MySQLConnection.__instance = mysql.connect(host=self.host, user=self.user, passwd=self.password, database=self.name, port=self.port)
+        connection = MySQLConnection.__instance
+
+        if connection is None:
+            connection = mysql.connect(host=self.host, user=self.user, passwd=self.password, database=self.name, port=self.port)
+            
+            # Connection Cursor Berhasil
+            cursor = connection.cursor()
+            sql = """
+                CREATE TABLE customers (
+                customer_id INT AUTO_INCREMENT PRIMARY KEY,
+                name VARCHAR(255),
+                address Varchar(255))
+            """
+            cursor.execute(sql)
         else:
             raise Exception('You cannot create another MySQL connection')
         
@@ -26,3 +38,16 @@ class MySQLConnection:
     @staticmethod
     def close_instance() -> None:
         MySQLConnection.__instance.close()
+
+    # Connection Gagal
+    # def create_table_customers(self):
+    #     connection = MySQLConnection.__instance
+    #     cursor = connection.cursor()
+    #     sql = """
+    #         CREATE TABLE customers (
+    #         customer_id INT AUTO_INCREMENT PRIMARY KEY,
+    #         name VARCHAR(255),
+    #         address Varchar(255))
+    #     """
+    #     msyql_cursor.execute(sql)
+    #     print("tabel berhasil dibuat")
